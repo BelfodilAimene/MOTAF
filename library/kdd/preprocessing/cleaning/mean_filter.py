@@ -37,7 +37,6 @@ def mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='numb
     Notes
     -----
     The commputational complexity is O(n)
-    
     """
     
     if (window_type=='causal') : kernel_shape=(-window_size,0)
@@ -53,8 +52,26 @@ def mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='numb
 
 def _base_mean_filter(trace,kernel_shape) :
     """
-    clean the trace using mean filter.
-    kernel_shape is couple (l,r) where l<=0 and r>=0, for a point of index i points in index [i+l,i+r[ are used in the mean filter  
+    Perform a mean filter on the trace
+
+    Parameters
+    ----------
+    trace : Trace
+        A Trace object (see Trace in Model)
+
+    kernel_shape : 2-tuple 
+        the kernel_shape is 2-tuple (l,r) where l<=0 and r>=0, thus, when the filter
+        estimate the position of an event of index 'i', it will use all the events of
+        index in the interval [i+l,i+r]
+
+    Returns
+    -------
+    filtered_trace : Trace
+        the filtered trace.
+
+    Notes
+    -----
+    The commputational complexity is O(n)
     """
     
     trace_size=len(trace)
@@ -94,8 +111,27 @@ def _base_mean_filter(trace,kernel_shape) :
 
 def _base_mean_filter_by_time(trace,kernel_shape) :
     """
-    clean the trace using mean filter.
-    kernel_shape is couple (l,r) where l<=0 and r>=0, every event whose difference in time with actual event is in [l,r] (l and r are in seconds)   
+    Perform a mean filter on the trace
+
+    Parameters
+    ----------
+    trace : Trace
+        A Trace object (see Trace in Model)
+
+    kernel_shape : 2-tuple 
+        the kernel_shape is 2-tuple (l,r) where l<=0 and r>=0 (in seconds),
+        thus, when the filter estimate the position of an event which date
+        time is 't', it will use all the events whcih datetime is in interval
+        [t+l,t+r]
+
+    Returns
+    -------
+    filtered_trace : Trace
+        the filtered trace.
+
+    Notes
+    -----
+    The commputational complexity is O(n)
     """
     
     trace_size=len(trace)
