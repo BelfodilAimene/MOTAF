@@ -1,4 +1,4 @@
-from Position import Position
+from position import Position
     
 class Event(Position) :
 

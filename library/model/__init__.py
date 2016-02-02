@@ -1,3 +1,3 @@
-from Position import Position
-from Event import Event
-from Trace import Trace
+from position import Position
+from event import Event
+from trace import Trace
