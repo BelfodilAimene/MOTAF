@@ -2,6 +2,9 @@ from library.model import Event,Trace
 from library.visualization.visualize_trace import plot_trace_2D,plot_trace_3D
 from library.data_management.csv_trace_reader import read_trace_from_CSV
 from library.kdd.preprocessing.cleaning.mean_filter import *
+from library.kdd.preprocessing.cleaning.median_filter import *
+
+from library.kdd.preprocessing.compression.douglas_peucker import *
 import datetime
 
 def get_synthetic_trace() :
@@ -18,9 +21,13 @@ def get_real_trace(csv_source_file="../Data Samples/280.csv") :
     return read_trace_from_CSV("../Data Samples/280.csv")
 
 trace=get_real_trace()
-filtered_trace=mean_filter(trace,4,'causal','number')
-plot_trace_3D(filtered_trace)
-
+#filtered_trace=median_filter(trace,2,'causal','time')
+compressed=rdp_compress(trace,epsilon=0.001)
+plot_trace_2D(trace)
+plot_trace_2D(compressed)
+#for event in trace : print event
+#print "Filtering ..."
+#for event in filtered_trace : print event
 #for event in trace : print event
 #filtered_trace=mean_filter(trace,4,'causal','time')
 #filtered_trace=mean_filter(trace,5,'centered')
