@@ -22,7 +22,7 @@ def get_real_trace(csv_source_file="../Data Samples/280.csv") :
 
 trace=get_real_trace()
 #filtered_trace=median_filter(trace,2,'causal','time')
-compressed=rdp_compress(trace,epsilon=0.001)
+compressed=rdp_compress(trace,epsilon=0.0001)
 plot_trace_2D(trace)
 plot_trace_2D(compressed)
 #for event in trace : print event

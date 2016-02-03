@@ -36,7 +36,7 @@ def mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='numb
 
     Notes
     -----
-    The commputational complexity is O(n)
+    The computational complexity is O(n)
     """
     
     if (window_type=='causal') : kernel_shape=(-window_size,0)
@@ -71,7 +71,7 @@ def _base_mean_filter(trace,kernel_shape) :
 
     Notes
     -----
-    The commputational complexity is O(n)
+    The computational complexity is O(n)
     """
     
     trace_size=len(trace)
@@ -131,7 +131,7 @@ def _base_mean_filter_by_time(trace,kernel_shape) :
 
     Notes
     -----
-    The commputational complexity is O(n)
+    The computational complexity is O(n)
     """
     
     trace_size=len(trace)
