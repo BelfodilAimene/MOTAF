@@ -1,1 +1,1 @@
-
+from douglas_peucker import rdp_compress
