@@ -1,4 +1,14 @@
 class Const:
+   """
+   This class contains all constants.
+
+   Attributes
+   ----------
+
+   earth_radius : the earth radius in meter (~ 6378137 m)
+      used for geodisic distance calculation.
+   
+   """
    
    def __init__(self):
        Const.__items = {}

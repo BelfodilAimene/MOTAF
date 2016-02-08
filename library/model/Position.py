@@ -2,6 +2,28 @@ import math,numpy as np
 from const import Const 
 
 class Position :
+    """
+    This class models a Position in earth.
+
+    Parameters
+    ----------
+
+    latitude : float
+        the latitude of the moving object at the datetime moment
+
+    longitude : float
+        the longitude of the moving object at the datetime moment
+    
+    
+    Attributes
+    ----------
+
+    latitude : float
+        the latitude of the mouving object at the datetime moment
+
+    longitude : float
+        the longitude of the mouving object
+    """
 
     def __init__(self,latitude,longitude) :
         self.latitude=float(latitude)
@@ -9,8 +31,21 @@ class Position :
     
     def geodisic_distance(self,other) :
         """
-        return geodisic distance between two points in earth in meter
+        Return geodisic distance between two points in earth in meter
+
+        Parameters
+        ----------
+
+        other : Event
+            Object of class Event
+
+        Returns
+        -------
+        
+        distance : float
+            geodisic distance between two points in earth in meter
         """
+        
         latitude1,longitude1,latitude2,longitude2=self.latitude,self.longitude,other.latitude,other.longitude
         if (latitude1==latitude1 and longitude1==longitude2) : return 0
         const = Const()
@@ -28,16 +63,46 @@ class Position :
 
     def euclidean_distance(self,other) :
         """
-        return euclidean distance between the two points
+        Return euclidean distance between the two positions
+        (latitude, longitude) are seen in the euclidean space (not spheric space)
+        its a good approximation with the geodisic distance when the two points
+        aren't distant.
+        The distance unit isn't meter, we can say that 0.00001 is approximately 1 meter . 
+
+        Parameters
+        ----------
+
+        other : Event
+            Object of class Event
+
+        Returns
+        -------
+        
+        distance : float
+            euclidean distance between the two positions
         """
+        
         latitude1,longitude1,latitude2,longitude2=self.latitude,self.longitude,other.latitude,other.longitude
         latitude_difference,longitude_difference=latitude2-latitude1,longitude2-longitude1
         return math.sqrt(latitude_difference*latitude_difference+longitude_difference*longitude_difference)
 
     def bearing(self,other) :
         """
-        return the bearing from the self event to other event in degree
+        Return the bearing from the self event to other event in degree between 0 and 360. 
+
+        Parameters
+        ----------
+
+        other : Event
+            Object of class Event
+
+        Returns
+        -------
+        
+        bearing : float
+            The bearing from the self event to other event in degree between 0 and 360.
         """
+        
         latitude1,longitude1,latitude2,longitude2=self.latitude,self.longitude,other.latitude,other.longitude
         radians_to_degrees = 180 / math.pi
         longitude_difference=longitude2-longitude1

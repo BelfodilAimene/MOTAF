@@ -1,5 +1,16 @@
 class Trace :
+    """
+    This class models a Mobility Trace of a moving object in time.
+    The trace is seen as a list of events :
+    (__list__, __getitems__, __iter__ and __len__ methods are overloaded)
 
+    Attributes
+    ----------
+
+    __events : list<Event>
+        list of event ordered by increasing datetime (by construction) 
+    """
+    
     def __init__(self) :
         self.__events=[]
 
