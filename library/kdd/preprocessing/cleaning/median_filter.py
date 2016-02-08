@@ -49,6 +49,10 @@ def median_filter(trace,window_size=4,window_type='causal',neighbooring_type='nu
     filtered_trace : Trace
         the filtered trace.
 
+    Notes
+    -----
+    The used distance is the euclidean distance.
+
     """
     
     if (window_type=='causal') : kernel_shape=(-window_size,0)

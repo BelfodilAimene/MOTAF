@@ -36,7 +36,8 @@ def mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='numb
 
     Notes
     -----
-    The commputational complexity is O(n)
+        - The commputational complexity is O(n)
+        - The used distance is the euclidean distance.
     """
     
     if (window_type=='causal') : kernel_shape=(-window_size,0)

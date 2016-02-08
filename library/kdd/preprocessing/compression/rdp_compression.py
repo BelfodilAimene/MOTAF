@@ -16,7 +16,7 @@ def rdp_compress(trace,epsilon=0.0001) :
     trace : Trace
         A Trace object (see Trace in Model)
 
-    epsilon : double, optional
+    epsilon : float, optional
         epsilon precise the maximal EUCLIDIAN DISTANCE supported in compression.
         Lesser is epsilon, better is the compression (in term of the distance between
         the compressed trace and the original trace)
@@ -92,7 +92,7 @@ def _rdp_compress_recursive(positions_list,epsilon) :
     positions_list : list<Position>
         A list of Position (see Position in Model) which represent the trajectory
 
-    epsilon : double, optional
+    epsilon : float, optional
         epsilon precise the maximal EUCLIDIAN DISTANCE supported in compression.
         Lesser is epsilon, better is the compression (in term of the distance between
         the compressed trace and the original trace)
