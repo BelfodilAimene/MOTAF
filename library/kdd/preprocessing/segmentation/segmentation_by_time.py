@@ -25,7 +25,7 @@ def segment_by_time(trace,maximum_time_difference=1800) :
     Returns
     -------
     segmented_trace : list<Trace>
-        the segmented trace.
+        the segmented trace as list of trace (every event is took in count).
 
     Notes
     -----
