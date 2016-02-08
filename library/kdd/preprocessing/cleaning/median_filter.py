@@ -305,8 +305,7 @@ def _get_next_weiszfeld_point(points_list,last_point) :
     last_point_latitude,last_point_longitude=last_point.latitude,last_point.longitude
 
     last_point_in_points_list=False
-    last_point_centralized_latitude,last_point_centralized_longitude=0,0
-
+    
     weights_sum=0
     
     for point in points_list :
@@ -316,24 +315,29 @@ def _get_next_weiszfeld_point(points_list,last_point) :
             weights_sum+=weight
             new_point_latitude_non_equal+=weight*point.latitude
             new_point_longitude_non_equal+=weight*point.longitude
-            last_point_centralized_latitude+=weight*(point.latitude-last_point_latitude)
-            last_point_centralized_longitude+=weight*(point.longitude-last_point_longitude)
         else :
             last_point_in_points_list=True
             
     if (weights_sum==0) :
-        new_point=last_point
+        return last_point
     else :
         new_point_latitude_non_equal/=weights_sum
         new_point_longitude_non_equal/=weights_sum
         if (not last_point_in_points_list) :
-            new_point=Position(new_point_latitude_non_equal,new_point_longitude_non_equal)
+            return Position(new_point_latitude_non_equal,new_point_longitude_non_equal)
         else :
+            last_point_centralized_latitude,last_point_centralized_longitude=0,0
+            for point in points_list :
+                distance=point.euclidean_distance(last_point)
+                if (distance>0) :
+                    weight=1/distance
+                    last_point_centralized_latitude+=weight*(point.latitude-last_point_latitude)
+                    last_point_centralized_longitude+=weight*(point.longitude-last_point_longitude)
             last_point_centralized_latitude/=weights_sum
             last_point_centralized_longitude/=weights_sum
             last_point_centralized_module=math.sqrt(last_point_centralized_latitude*last_point_centralized_latitude+last_point_centralized_longitude*last_point_centralized_longitude)
             last_point_weight=min(1,1/last_point_centralized_module) if (last_point_centralized_module>0) else 1
+
             new_point_latitude=(1-last_point_weight)*new_point_latitude_non_equal+last_point_weight*last_point_latitude
             new_point_longitude=(1-last_point_weight)*new_point_longitude_non_equal+last_point_weight*last_point_longitude            
-            new_point=Position(new_point_latitude,new_point_longitude)
-    return new_point
+            return Position(new_point_latitude,new_point_longitude)

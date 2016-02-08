@@ -23,13 +23,13 @@ def get_real_trace(csv_source_file="../Data Samples/280.csv") :
 def just_try() :
     trace=get_real_trace()    
     starting_time=time.time()
-    #filtered_trace=median_filter(trace,10,'causal','number','weiszfeld',epsilon=0.1)
-    #segmented=segment_by_time(trace)
+    #result_trace=median_filter(trace,15,'causal','number','weiszfeld',epsilon=0.00001)
+    #result_trace=segment_by_time(trace)
     print "compressing ..."
-    compressed=rdp_compress(trace)
+    result_trace=rdp_compress(trace)
     elapsed_time=time.time()-starting_time
     print "Elapsed time :",elapsed_time,"s"
-    plot_trace_2D(trace,compressed)
-    plot_trace_3D(trace,compressed)
+    plot_trace_2D(trace,result_trace)
+    plot_trace_3D(trace,result_trace)
 
 just_try()
