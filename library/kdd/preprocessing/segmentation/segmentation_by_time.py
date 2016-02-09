@@ -6,8 +6,7 @@ Trace segmentation by time
 
 from ....model import Trace
 
-
-def segment_by_time(trace,maximum_time_difference=1800) :
+def _segment_by_time(trace,maximum_time_difference=1800) :
     """
     Segment the trace in n segment where each segment is continous
     with respect to maximum_time_difference
@@ -17,15 +16,15 @@ def segment_by_time(trace,maximum_time_difference=1800) :
     trace : Trace
         A Trace object (see Trace in Model)
 
-    maximum_time_difference : double, optional
-        double value in seconds, two consecutive event which time
+    maximum_time_difference : float, optional
+        float value in seconds, two consecutive event which time
         difference exceed maximum_time_difference are in two
-        different segments
+        different segments.
 
     Returns
     -------
     segmented_trace : list<Trace>
-        the segmented trace as list of trace (every event is took in count).
+        the segmented trace as list of trace (all event are took in count).
 
     Notes
     -----
@@ -45,3 +44,44 @@ def segment_by_time(trace,maximum_time_difference=1800) :
             current_segment=Trace()
         last_event=current_event
     return segmented_trace
+
+
+class Segmentation_by_time :
+    """
+    Segment the trace in n segment where each segment is continous
+    with respect to maximum_time_difference.
+
+    Parameters
+    ----------
+    maximum_time_difference : float, optional
+        float value in seconds, two consecutive event which time
+        difference exceed maximum_time_difference are in two
+        different segments.
+
+    Attributs
+    ---------
+    segmented_trace_ : list<Trace>
+        the segmented trace as list of trace (all event are took in count).
+    """
+
+    def __init__(self,maximum_time_difference=1800) :
+        self.maximum_time_difference=maximum_time_difference
+
+    def fit(self, trace) :
+        """
+        Segment the trace in n segment where each segment is continous
+        with respect to maximum_time_difference.
+
+        Parameters
+        ----------
+        trace : Trace
+            A Trace object (see Trace in Model)
+
+        Returns
+        -------
+        segmented_trace_ : list<Trace>
+            the segmented trace as list of trace (all event are took in count).
+        """
+
+        self.segmented_trace_=_segment_by_time(trace,maximum_time_difference=self.maximum_time_difference)
+        return self.segmented_trace_

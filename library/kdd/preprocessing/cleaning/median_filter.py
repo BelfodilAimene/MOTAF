@@ -5,11 +5,12 @@ Median Filter
 #Author : Belfodil Aimene <aimene.belfodil@insa-lyon.fr>
 
 import math
+
 from ....model import Event,Position
 
-def median_filter(trace,window_size=4,window_type='causal',neighbooring_type='number',algorithm='weiszfeld',**kwargs) :
+def _median_filter(trace,window_size=4,window_type='causal',neighbooring_type='number',algorithm='weiszfeld',epsilon=0.00001) :
     """
-    Perform a mean filter on the trace
+    Perform the median filtering on the trace.
 
     Parameters
     ----------
@@ -38,11 +39,10 @@ def median_filter(trace,window_size=4,window_type='causal',neighbooring_type='nu
             the other points in the given list of points. This method has more computation complexity
             relatively to weiszfeld algorithme
 
-    kwargs :
-        epsilon : float, optional
-            used only when the used algorithm=weiszfeld, it precise the convergence criteria (i.e.
-            the distance between the point and its next in the iterative algorithm is smaller than epsilon)
-            the used default value is 0.00001
+    epsilon : float, optional
+        used only when the used algorithm=weiszfeld, it precise the convergence criteria (i.e.
+        the distance between the point and its next in the iterative algorithm is smaller than epsilon)
+        the used default value is 0.00001
 
     Returns
     -------
@@ -53,21 +53,27 @@ def median_filter(trace,window_size=4,window_type='causal',neighbooring_type='nu
     -----
     The used distance is the euclidean distance.
 
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
+
+
     """
     
     if (window_type=='causal') : kernel_shape=(-window_size,0)
     elif (window_type=='centered') : kernel_shape=(-(window_size/2),window_size/2)
     else : raise Exception("window_type dosen't exists")
 
-    if (neighbooring_type=='number') : filtered_trace=_base_median_filter(trace,kernel_shape,algorithm,**kwargs)
-    elif (neighbooring_type=='time') : filtered_trace=_base_median_filter_by_time(trace,kernel_shape,algorithm,**kwargs)
+    if (neighbooring_type=='number') : filtered_trace=_base_median_filter(trace,kernel_shape,algorithm,epsilon=epsilon)
+    elif (neighbooring_type=='time') : filtered_trace=_base_median_filter_by_time(trace,kernel_shape,algorithm,epsilon=epsilon)
     else : raise Exception("neighbooring_type dosen't exists")
 
     return filtered_trace
 
 def _base_median_filter(trace,kernel_shape,algorithm,**kwargs) :
     """
-    Perform a median filter on the trace
+    Perform the median filtering on the trace.
 
     Parameters
     ----------
@@ -98,6 +104,11 @@ def _base_median_filter(trace,kernel_shape,algorithm,**kwargs) :
     -------
     filtered_trace : Trace
         the filtered trace.
+
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
     """
     
     if (algorithm=='weiszfeld') :
@@ -136,7 +147,7 @@ def _base_median_filter(trace,kernel_shape,algorithm,**kwargs) :
 
 def _base_median_filter_by_time(trace,kernel_shape,algorithm,**kwargs) :
     """
-    Perform a median filter on the trace
+    Perform the median filtering on the trace.
 
     Parameters
     ----------
@@ -168,6 +179,11 @@ def _base_median_filter_by_time(trace,kernel_shape,algorithm,**kwargs) :
     -------
     filtered_trace : Trace
         the filtered trace.
+
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
     """
 
     if (algorithm=='weiszfeld') :
@@ -266,6 +282,11 @@ def _get_median_weiszfeld(points_list,epsilon) :
     -------
     median_point : Position
         the geometric median position.
+
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
     """
     sum_distances=[0]*len(points_list)
     initial_point_latitude,initial_point_longitude=0,0
@@ -300,6 +321,11 @@ def _get_next_weiszfeld_point(points_list,last_point) :
     -------
     next_point : Position
         the new median point  (iterative method)
+
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
     """
     new_point_latitude_non_equal,new_point_longitude_non_equal=0,0
     last_point_latitude,last_point_longitude=last_point.latitude,last_point.longitude
@@ -341,3 +367,77 @@ def _get_next_weiszfeld_point(points_list,last_point) :
             new_point_latitude=(1-last_point_weight)*new_point_latitude_non_equal+last_point_weight*last_point_latitude
             new_point_longitude=(1-last_point_weight)*new_point_longitude_non_equal+last_point_weight*last_point_longitude            
             return Position(new_point_latitude,new_point_longitude)
+
+
+class Median_filter :
+    """
+    Perform the median filtering on the trace.
+
+    Parameters
+    ----------
+    window_size : int, optional
+        precise the size of the window used for filtering depends on neighbooring_type parameter
+        if neighbooring_type='number' the window_size will precise the approximate number of event
+        used; if neighbooring_type='time' the window_size will precise the size of window in seconds 
+
+    window_type : {'causal', 'centered'}, optional
+        'causal' : the filter is causal, thus, it use only actual and past events for each event
+        'centered' : the filter is not causal, thus, it use past and futur events for each event
+
+    neighbooring_type : {'number', 'time'}, optional
+        the neighbooring_type change the signification of the window size, wether the neighbooring is
+        calculated by time or just by order
+
+    algorithm : {'weiszfeld','complete'}, optional
+        the used algorithme to calculate median for a list of 2D-points
+        'weiszfeld' : the iterative algorithme of Weiszdeld corrected by Yehuda Vardi and Cun-Hui Zhang
+            in the paper "The multivariate L1-median and associated data depth, 1999", the median point
+            is don't necessarily chosen from the given list of points, it return the geometric median   
+        'complete' : an exact method which return the point which minimize the sum of distance with
+            the other points in the given list of points. This method has more computation complexity
+            relatively to weiszfeld algorithme
+
+    epsilon : float, optional
+        used only when the used algorithm=weiszfeld, it precise the convergence criteria (i.e.
+        the distance between the point and its next in the iterative algorithm is smaller than epsilon)
+        the used default value is 0.00001
+
+    Attributes
+    ----------
+    filtered_trace_ : Trace
+        the filtered trace.
+
+    Notes
+    -----
+    The used distance is the euclidean distance.
+
+    References
+    ----------
+    Vardi, Y., & Zhang, C. H. (2000). The multivariate L1-median and associated data depth.
+    Proceedings of the National Academy of Sciences, 97(4), 1423-1426.
+    """
+
+    def __init__(self,window_size=4,window_type='causal',neighbooring_type='number',algorithm='weiszfeld',epsilon=0.00001) :
+        self.window_size=window_size
+        self.window_type=window_type
+        self.neighbooring_type=neighbooring_type
+        self.algorithm=algorithm
+        self.epsilon=epsilon
+
+    def fit(self, trace) :
+        """
+        Perform a median filter on the trace.
+
+        Parameters
+        ----------
+        trace : Trace
+            A Trace object (see Trace in Model)
+
+        Returns
+        -------
+        filtered_trace_ : Trace
+            the filtered trace.
+        """
+
+        self.filtered_trace_=_median_filter(trace,window_size=self.window_size,window_type=self.window_type,neighbooring_type=self.neighbooring_type,algorithm=self.algorithm,epsilon=self.epsilon)
+        return self.filtered_trace_

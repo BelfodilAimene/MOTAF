@@ -5,6 +5,7 @@ from library.data_management.csv_trace_reader import read_trace_from_CSV
 from library.kdd.preprocessing.cleaning import *
 from library.kdd.preprocessing.compression import *
 from library.kdd.preprocessing.segmentation import *
+from library.kdd.mining.poi_detection import *
 import datetime
 
 def get_synthetic_trace() :
@@ -21,15 +22,20 @@ def get_real_trace(csv_source_file="../Data Samples/280.csv") :
     return read_trace_from_CSV("../Data Samples/280.csv")
 
 def just_try() :
-    trace=get_real_trace()    
+    trace=get_real_trace()
+    SP=Stay_points(0.0001,1800)
+    ST=Segmentation_by_time(1800)
+    RDPC=RDP_compression(0.0001)
+    MEANF=Mean_filter(10,'causal','number')
+    MEDIANF=Median_filter(10,'causal','number','complete',epsilon=0.0001)
+    
     starting_time=time.time()
-    #result_trace=median_filter(trace,15,'causal','number','weiszfeld',epsilon=0.00001)
-    #result_trace=segment_by_time(trace)
-    print "compressing ..."
-    result_trace=rdp_compress(trace)
+    result_trace=MEANF.fit(trace)
+    result_trace_2=MEDIANF.fit(trace)
     elapsed_time=time.time()-starting_time
     print "Elapsed time :",elapsed_time,"s"
-    plot_trace_2D(trace,result_trace)
-    plot_trace_3D(trace,result_trace)
+
+    plot_trace_2D(trace,result_trace,result_trace_2)
+    plot_trace_3D(trace,result_trace,result_trace_2)
 
 just_try()

@@ -1,1 +1,1 @@
-from rdp_compression import rdp_compress
+from rdp_compression import RDP_compression

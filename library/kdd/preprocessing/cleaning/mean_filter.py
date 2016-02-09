@@ -7,9 +7,9 @@ Mean Filter
 from ....model import Event
 
 
-def mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='number') :
+def _mean_filter(trace,window_size=4,window_type='causal',neighbooring_type='number') :
     """
-    Perform a mean filter on the trace
+    Perform a mean filter on the trace.
 
     Parameters
     ----------
@@ -183,3 +183,57 @@ def _base_mean_filter_by_time(trace,kernel_shape) :
         filtered_trace.append(event)
               
     return filtered_trace
+
+
+class Mean_filter :
+    """
+    Perform a mean filter on the trace.
+
+    Parameters
+    ----------
+    window_size : int, optional
+        precise the size of the window used for filtering depends on neighbooring_type parameter
+        if neighbooring_type='number' the window_size will precise the approximate number of event
+        used; if neighbooring_type='time' the window_size will precise the size of window in seconds 
+
+    window_type : {'causal', 'centered'}, optional
+        'causal' : the filter is causal, thus, it use only actual and past events for each event
+        'centered' : the filter is not causal, thus, it use past and futur events for each event
+
+    neighbooring_type : {'number', 'time'}, optional
+        the neighbooring_type change the signification of the window size, wether the neighbooring is
+        calculated by time or just by order
+
+    Attributes
+    ----------
+    filtered_trace_ : Trace
+        the filtered trace.
+
+    Notes
+    -----
+        - The commputational complexity is O(n)
+        - The used distance is the euclidean distance.
+    """
+
+    def __init__(self,window_size=4,window_type='causal',neighbooring_type='number') :
+        self.window_size=window_size
+        self.window_type=window_type
+        self.neighbooring_type=neighbooring_type
+
+    def fit(self, trace) :
+        """
+        Perform a mean filter on the trace.
+
+        Parameters
+        ----------
+        trace : Trace
+            A Trace object (see Trace in Model)
+
+        Returns
+        -------
+        filtered_trace_ : Trace
+            the filtered trace.
+        """
+
+        self.filtered_trace_=_mean_filter(trace,window_size=self.window_size,window_type=self.window_type,neighbooring_type=self.neighbooring_type)
+        return self.filtered_trace_

@@ -7,9 +7,9 @@ Douglas Peucker compression algorithme
 from ....model import Trace
 
 
-def rdp_compress(trace,epsilon=0.0001) :
+def _rdp_compress(trace,epsilon=0.0001) :
     """
-    Perform the douglas peucker algorithm on the trace
+    Perform the Ramer-Douglas-Peucker algorithm on the trace
 
     Parameters
     ----------
@@ -85,7 +85,7 @@ def _shortest_distance_to_segment(position,segment_starting_position,segment_end
 
 def _rdp_compress_recursive(positions_list,epsilon) :
     """
-    Perform the douglas peucker algorithm on the trajectory
+    Perform the Ramer-Douglas-Peucker algorithm on the trajectory
 
     Parameters
     ----------
@@ -106,6 +106,12 @@ def _rdp_compress_recursive(positions_list,epsilon) :
     Notes
     -----
     The computational complexity is O(n log(n))
+
+    References
+    ----------
+    Douglas, D. H., & Peucker, T. K. (1973). Algorithms for the reduction of the number of points
+    required to represent a digitized line or its caricature.
+    Cartographica: The International Journal for Geographic Information and Geovisualization, 10(2), 112-122.
     """
     
     dmax=0
@@ -122,3 +128,53 @@ def _rdp_compress_recursive(positions_list,epsilon) :
     else :
         result=[positions_list[0],positions_list[-1]]
     return result
+
+
+class RDP_compression :
+    """
+    Perform the Ramer-Douglas-Peucker algorithm on the trace
+
+    Parameters
+    ----------
+    epsilon : float, optional
+        epsilon precise the maximal EUCLIDIAN DISTANCE supported in compression.
+        Lesser is epsilon, better is the compression (in term of the distance between
+        the compressed trace and the original trace)
+        Note : default value is 0.0001 (in euclidian space) which is approximatly 11.132 meters
+
+    Attributes
+    ----------
+    compressed_trace_ : Trace
+        the compressed trace.
+
+    Notes
+    -----
+    The computational complexity is O(n log(n))
+
+    References
+    ----------
+    Douglas, D. H., & Peucker, T. K. (1973). Algorithms for the reduction of the number of points
+    required to represent a digitized line or its caricature.
+    Cartographica: The International Journal for Geographic Information and Geovisualization, 10(2), 112-122.
+    """
+
+    def __init__(self,epsilon=0.0001) :
+        self.epsilon=epsilon
+
+    def fit(self, trace) :
+        """
+        Perform the Ramer-Douglas-Peucker algorithm on the trace
+
+        Parameters
+        ----------
+        trace : Trace
+            A Trace object (see Trace in Model)
+
+        Returns
+        -------
+        compressed_trace_ : Trace
+            the compressed trace.
+        """
+
+        self.compressed_trace_=_rdp_compress(trace,epsilon=self.epsilon)
+        return self.compressed_trace_

@@ -1,1 +1,1 @@
-from segmentation_by_time import segment_by_time
+from segmentation_by_time import Segmentation_by_time
