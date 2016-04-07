@@ -18,11 +18,11 @@ def get_synthetic_trace() :
     trace.add_events(event1,event2,event3,event4,event5)
     return trace
 
-def get_real_trace(csv_source_file="../Data Samples/280.csv") :
-    return read_trace_from_CSV("../Data Samples/280.csv")
+def get_real_trace(csv_source_file) :
+    return read_trace_from_CSV(csv_source_file)
 
 def just_try() :
-    trace=get_real_trace()
+    trace=get_synthetic_trace()
     SP=Stay_points(0.0001,1800)
     ST=Segmentation_by_time(1800)
     RDPC=RDP_compression(0.0001)
